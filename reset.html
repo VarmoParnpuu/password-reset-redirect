@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Redirecting…</title>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  const email = params.get('email');
+
+  // Construct your deep link
+  const deepLink = `myapp://reset-password?token=${token}&email=${email}`;
+
+  // Redirect to app
+  window.location.href = deepLink;
+
+  // Optional: fallback message if not redirected
+  setTimeout(() => {
+    document.body.innerHTML = `<p>If the app did not open, click <a href="${deepLink}">here</a></p>`;
+  }, 1000);
+</script>
+</head>
+<body>
+<p>Redirecting…</p>
+</body>
+</html>
