@@ -2,25 +2,53 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Redirecting…</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redirecting...</title>
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
-  const email = params.get('email');
+  window.onload = function() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const email = params.get('email');
+    const action = params.get('action'); // New parameter: 'reset' or 'verify'
 
-  // Construct your deep link
-  const deepLink = `chessy://reset-password?token=${token}&email=${email}`;
+    let deepLink = "";
+    let message = "Redirecting...";
 
-  // Redirect to app
-  window.location.href = deepLink;
+    // Logic to decide which screen to open in the app
+    if (action === 'reset') {
+        // Target: chessy://reset-password?token=...&email=...
+        deepLink = `chessy://reset-password?token=${token}&email=${email}`;
+        message = "Opening Password Reset...";
+    } else if (action === 'verify') {
+        // Target: chessy://verify-email?token=...&email=...
+        deepLink = `chessy://verify-email?token=${token}&email=${email}`;
+        message = "Verifying Email...";
+    } else {
+        // Fallback if link is malformed
+        document.body.innerHTML = "<h3>Invalid Request: Missing action type.</h3>";
+        return;
+    }
 
-  // Optional: fallback message if not redirected
-  setTimeout(() => {
-    document.body.innerHTML = `<p>If the app did not open, click <a href="${deepLink}">here</a></p>`;
-  }, 1000);
+    // Update UI text
+    document.getElementById('status').innerText = message;
+
+    // Perform the redirect
+    window.location.href = deepLink;
+
+    // Fallback button in case auto-redirect fails
+    setTimeout(() => {
+      document.getElementById('fallback').innerHTML = 
+        `<p>If the app did not open, click <a href="${deepLink}">here</a></p>`;
+    }, 1000);
+  };
 </script>
+<style>
+    body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+    a { color: #007AFF; text-decoration: none; font-weight: bold; }
+</style>
 </head>
 <body>
-<p>Redirecting…</p>
+    <h3 id="status">Redirecting...</h3>
+    <div id="fallback"></div>
 </body>
 </html>
